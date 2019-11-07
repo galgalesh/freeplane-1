@@ -1,35 +1,41 @@
 name: freeplane
-version: '1.6.10'
-summary: |
-  Application for Mind Mapping, Knowledge
-  and Project Management
+title: Freeplane
+version: '1.7.10'
+summary: A free tool to structure and organise your information with mind mapping
 description: |
-  Freeplane is a free and open source software 
-  application that supports thinking, sharing 
-  information and getting things done at work, 
-  in school and at home. The core of the 
-  software is tools for mind mapping (also known 
-  as concept mapping or information mapping) 
-  and using mapped information.
+  Freeplane is a free and open source software application that supports
+  thinking, sharing information and getting things done at work, in school
+  and at home. The core of the software is tools for mind mapping (also known
+  as concept mapping or information mapping) and using mapped information.
 
+  Occupying the middle ground between an editor and a diagramming tool,
+  Freeplane allows the user to add content as quickly and naturally as they
+  would in a text editor, yet producing structured content that can be
+  manipulated as easily as a diagram.
+
+  Features include ordering ideas in nodes and freely positionable nodes,
+  connecting nodes, automatic/conditional styles, scripting, add-ons, LaTeX,
+  search/filtering, different export features, printing, password protection
+  of nodes/maps and more.
+
+base: core18
 confinement: devmode
-
-parts:
-  freeplane:
-    after: [desktop-glib-only]
-    plugin: gradle
-    source: git@github.com:freeplane/freeplane.git
-    build: |
-      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
-      gradle release -x test -x createGitTag
-    install: |
-      unzip DIST/freeplane_bin-*.zip -d \
-      $SNAPCRAFT_PART_INSTALL/
-    build-packages:
-      - unzip
-      - openjdk-8-jdk
 
 apps:
   freeplane:
-    command: desktop-launch \
-      $SNAP/freeplane-1.6.10/freeplane.sh
+    extensions:
+      - gnome-3-28
+    command: freeplane-$SNAPCRAFT_PROJECT_VERSION/freeplane.sh
+    environment:
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-amd64
+      PATH: $JAVA_HOME/jre/bin:$PATH
+
+parts:
+  freeplane:
+    plugin: gradle
+    source: git@github.com:freeplane/freeplane.git
+    override-build: |
+      ../gradle/gradle-*/bin/gradle release -x test -x createGitTag
+      unzip DIST/freeplane_bin-*.zip -d $SNAPCRAFT_PART_INSTALL/
+    build-packages:
+      - unzip
