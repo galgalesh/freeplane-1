@@ -19,7 +19,7 @@ description: |
   of nodes/maps and more.
 
 base: core18
-confinement: devmode
+confinement: strict
 
 apps:
   freeplane:
@@ -29,13 +29,19 @@ apps:
     environment:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-amd64
       PATH: $JAVA_HOME/jre/bin:$PATH
+    plugs:
+      - home
+      - network
+      - cups-control
 
 parts:
   freeplane:
     plugin: gradle
-    source: git@github.com:freeplane/freeplane.git
+    source: https://github.com/freeplane/freeplane.git
+    gradle-output-dir: BIN
+    gradle-options: [release, -xtest, -xcreateGitTag]
     override-build: |
-      ../gradle/gradle-*/bin/gradle release -x test -x createGitTag
-      unzip DIST/freeplane_bin-*.zip -d $SNAPCRAFT_PART_INSTALL/
+      snapcraftctl build
+      unzip -o DIST/freeplane_bin-*.zip -d $SNAPCRAFT_PART_INSTALL/
     build-packages:
       - unzip
