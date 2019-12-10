@@ -1,6 +1,6 @@
 name: freeplane
 title: Freeplane
-version: '1.7.10'
+version: '1.7.3'
 summary: A free tool to structure and organise your information with mind mapping
 description: |
   Freeplane is a free and open source software application that supports
@@ -38,8 +38,9 @@ parts:
   freeplane:
     plugin: gradle
     source: https://github.com/freeplane/freeplane.git
+    source-tag: release-$SNAPCRAFT_PROJECT_VERSION
     gradle-output-dir: BIN
-    gradle-options: [release, -xtest, -xcreateGitTag]
+    gradle-options: [binZip, -xtest, -xcreateGitTag]
     override-build: |
       snapcraftctl build
       unzip -o DIST/freeplane_bin-*.zip -d $SNAPCRAFT_PART_INSTALL/
